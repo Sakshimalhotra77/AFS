@@ -1,37 +1,14 @@
 import speech_recognition as sr
-r = sr.Recognizer()
-with sr.Microphone() as source:
-    r.adjust_for_ambient_noise(source)  # here
-    print("Say something!")
-    audio = r.listen(source)
-try:
-	print('Transcript:\n' + r.recognize_google(audio))
-except :
-	pass
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''import speech_recognition as sr
+from vectors import get_vects
+from pprint import pprint
 
 r = sr.Recognizer()
-
 with sr.Microphone() as source:
-    print('Say')
-    audio = r.listen(source)
-try :
-    print('Transcript:\n' + r.recognize_google(audio))
-    
-except:
-    pass'''
+    while True:
+        r.adjust_for_ambient_noise(source)  # here
+        audio = r.listen(source)
+        try:
+            text = r.recognize_google(audio)
+            pprint(get_vects(text))
+        except :
+            pass
