@@ -164,10 +164,12 @@ class App extends Component {
 					<td>
 						<h3>Keywords</h3>
 					</td>
-				</tr>
-				<tr>
 					<td>
-						{ this.state.keywords }
+						{ 
+							this.state.keywords.map((data, i) => {
+								data + ", "
+							})
+						}
 					</td>
 				</tr>
 			</table>
