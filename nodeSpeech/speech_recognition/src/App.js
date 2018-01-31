@@ -19,18 +19,18 @@ class App extends Component {
 		super(props)
 		if (!("webkitSpeechRecognition" in window)){
 			this.state = {
-				emotionData: [],
-				sentimentData: [],
-				keywords: [],
 				running : false,
 				support : false,
-				identifiedText: ""
 			}
 		} else {
 			this.recognition = new window.webkitSpeechRecognition()
 			this.state = {
+				emotionData: [],
+				sentimentData: [],
+				keywords: [],
 				running : false,
-				support : true
+				support : true,
+				identifiedText: ""
 			}
 			this.recognition.onstart = () => {
 				// console.log("Start")
@@ -95,16 +95,12 @@ class App extends Component {
 
 			data = responseJson[2].probabilities
 			temp = {
-				"name" : "Sentiment",
+				"name" : "",
 				"positive" : data.positive,
 				"neutral" : data.neutral,
 				"negative" : data.negative,
 			}
-			var prevSentimentData
-			if (this.state.sentimentData)
-				prevSentimentData = this.state.sentimentData
-			else
-				prevSentimentData = []
+			var prevSentimentData = this.state.sentimentData
 			prevSentimentData.push(temp)
 			this.setState({sentimentData: prevSentimentData})
 			console.log(this.state.sentimentData)
@@ -146,7 +142,7 @@ class App extends Component {
 
 	renderLineGraph(){
 		return (
-			<LineChart width={600} height={300} data={ this.state.sentimentData }
+			<LineChart width={600} height={300} data={ [...this.state.sentimentData] }
             margin={{top: 5, right: 30, left: 20, bottom: 5}}>
 				<XAxis dataKey="name"/>
 				<YAxis/>
