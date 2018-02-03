@@ -30,7 +30,8 @@ class App extends Component {
 				keywords: [],
 				running : false,
 				support : true,
-				identifiedText: ""
+				identifiedText: "",
+				negAverage : 0
 			}
 			this.recognition.onstart = () => {
 				// console.log("Start")
@@ -104,6 +105,24 @@ class App extends Component {
 			prevSentimentData.push(temp)
 			this.setState({sentimentData: prevSentimentData})
 			console.log(this.state.sentimentData)
+			this.setState({negAverage: (this.state.negAverage+data.negative)/2})
+
+			console.log(this.state.negAverage)
+
+			if (this.state.negAverage > 0.75){
+				fetch('https://nltk-api.herokuapp.com/critical', {
+					method: 'POST',
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						text: "Session ID: 123456789876543489097654\nFlag: Critical\nAction Required: Immediate"
+					})
+				}).then(() => {
+					this.setState({negAverage: 0})
+				})
+			}
 
 			data = responseJson[0].keywords
 			temp = []
@@ -111,6 +130,7 @@ class App extends Component {
 				temp.push(data[i].keyword)
 			}
 			this.setState({keywords: temp})
+			console.log(this.state.keywords)
 
 			return responseJson
 		})
@@ -165,11 +185,13 @@ class App extends Component {
 						<h3>Keywords</h3>
 					</td>
 					<td>
-						{ 
-							this.state.keywords.map((data, i) => {
-								data + ", "
-							})
-						}
+						<ol>
+							{
+								this.state.keywords.map((data, i) => (
+									<li key = {i}> {data} </li>
+								))
+							}
+						</ol>
 					</td>
 				</tr>
 			</table>
